@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Console Plug Manager</title>
+    <link rel="icon" type="image/png" href="../img/logo/logo.png">
+    <link rel="apple-touch-icon" href="../img/logo/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Notifications">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="bell" class="text-yellow-600" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Notifications</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">View alerts and system messages.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <!-- Notification Filters -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex gap-3 flex-wrap">
+                                <button onclick="filterNotifications('all')" data-filter="all" class="filter-btn px-4 py-2 rounded-lg bg-blue-50 text-blue-600 font-medium">
+                                    All
+                                </button>
+                                <button onclick="filterNotifications('unread')" data-filter="unread" class="filter-btn px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                                    Unread
+                                </button>
+                                <button onclick="filterNotifications('warning')" data-filter="warning" class="filter-btn px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                                    Warnings
+                                </button>
+                                <button onclick="filterNotifications('success')" data-filter="success" class="filter-btn px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                                    Success
+                                </button>
+                            </div>
+                            <button onclick="markAllAsRead()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap flex items-center gap-2">
+                                <i data-lucide="check-check" style="width: 16px; height: 16px;"></i>
+                                <span>Mark All Read</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notifications List -->
+                    <div class="space-y-3 mb-6" id="notificationsList">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-4">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div class="text-sm text-gray-700">
+                                Showing <span id="notifShowingStart">0</span> to <span id="notifShowingEnd">0</span> of <span id="notifTotalItems">0</span> notifications
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="previousNotifPage()" id="notifPrevBtn" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                                    <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                                </button>
+                                <div id="notifPageNumbers" class="flex gap-1">
+                                    <!-- Page numbers -->
+                                </div>
+                                <button onclick="nextNotifPage()" id="notifNextBtn" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                                    <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Detail Modal -->
+    <div id="notificationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900" id="modalNotifTitle">Notification</h2>
+                    <button onclick="closeNotificationModal()" class="text-gray-400 hover:text-gray-600">
+                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div id="modalNotifIcon" class="w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="bell" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500" id="modalNotifDate">Date</p>
+                            <p class="text-sm text-gray-500" id="modalNotifTime">Time</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-6" id="modalNotifMessage">Message content</p>
+                <div class="flex gap-3">
+                    <button onclick="closeNotificationModal()" class="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Close
+                    </button>
+                    <button onclick="markModalNotifAsRead()" id="modalMarkReadBtn" class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Mark as Read
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+        <script src="../js/toast.js"></script>
+        <script src="../js/components.js"></script>
+<script src="../js/data.js"></script>
+    <script src="../js/notifications.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

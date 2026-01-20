@@ -1,0 +1,742 @@
+/* ============================================
+   Console Plug Manager - Global Styles
+   ============================================ */
+
+/* CSS Custom Properties (Variables) */
+:root {
+    /* Primary Colors (Blue) */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    
+    /* Accent Colors (Green) */
+    --color-accent-50: #f0fdf4;
+    --color-accent-100: #dcfce7;
+    --color-accent-200: #bbf7d0;
+    --color-accent-300: #86efac;
+    --color-accent-400: #4ade80;
+    --color-accent-500: #22c55e;
+    --color-accent-600: #16a34a;
+    --color-accent-700: #15803d;
+    --color-accent-800: #166534;
+    --color-accent-900: #14532d;
+    
+    /* Neutral Colors (Gray) */
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+    
+    /* Background Colors */
+    --bg-main: #f8f9fa;
+    --bg-card: #FFFFFF;
+    --bg-container: #FFFFFF;
+    
+    /* Border Colors */
+    --border-light: #f0f0f0;
+    --border-lighter: #e5e5e5;
+    --border-default: #e5e7eb;
+    
+    /* Spacing */
+    --topbar-height: 64px;
+    --bottomnav-height: 64px;
+    --sidebar-width: 256px;
+    
+    /* Z-Index Layers */
+    --z-content: 0;
+    --z-sidebar: 10;
+    --z-overlay: 30;
+    --z-topbar: 40;
+    --z-bottomnav: 40;
+    --z-modal: 50;
+}
+
+/* ============================================
+   Global Reset & Base Styles
+   ============================================ */
+
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body { 
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: var(--bg-main);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: 700;
+}
+
+p {
+    margin: 0;
+}
+
+/* ============================================
+   Transitions & Animations
+   ============================================ */
+
+button, a, .card {
+    transition: all 0.3s ease;
+}
+
+input, select, textarea {
+    transition: all 0.2s ease;
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+/* Primary button gradient */
+.bg-blue-600 {
+    background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.bg-blue-600:hover {
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+/* ============================================
+   Card Styles
+   ============================================ */
+
+.rounded-xl, .rounded-2xl, .rounded-lg {
+    transition: all 0.3s ease;
+}
+
+.rounded-xl:hover, .rounded-2xl:hover, .rounded-lg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Disable hover effects for sticky cards */
+.no-hover:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   Form Input Styles
+   ============================================ */
+
+input:focus, select:focus, textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    outline: none;
+}
+
+/* ============================================
+   Navigation Styles
+   ============================================ */
+
+nav a {
+    transition: all 0.2s ease;
+}
+
+/* ============================================
+   Icon Styles
+   ============================================ */
+
+/* Lucide icons - outline/stroke style with colored strokes */
+svg.lucide {
+    stroke-width: 2.5;
+    fill: none;
+}
+
+/* ============================================
+   Table Styles
+   ============================================ */
+
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: var(--color-neutral-50);
+}
+
+/* ============================================
+   Layout Components
+   ============================================ */
+
+/* Sidebar Container */
+#sidebar-container {
+    min-height: 100%;
+    background: white;
+    width: 0; /* Hidden on mobile */
+}
+
+@media (min-width: 768px) {
+    #sidebar-container {
+        width: var(--sidebar-width);
+        border-right: 1px solid var(--border-default);
+    }
+    
+    /* Collapsed state on desktop */
+    #sidebar-container.collapsed {
+        width: 0 !important;
+        border: none !important;
+    }
+}
+
+/* Topbar Container */
+#topbar-container {
+    height: var(--topbar-height);
+    background: white;
+    border-bottom: 1px solid var(--border-default);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-topbar);
+}
+
+/* Hide topbar on mobile */
+@media (max-width: 767px) {
+    #topbar-container {
+        display: none;
+    }
+}
+
+/* Bottom Navigation Container */
+#bottomnav-container {
+    height: 0;
+}
+
+/* Prevent flickering during component load */
+#sidebar-container,
+#topbar-container,
+#bottomnav-container {
+    opacity: 0;
+    transition: opacity 0.15s ease-in;
+}
+
+/* Show containers once loaded with smooth fade-in */
+#sidebar-container.loaded,
+#topbar-container.loaded,
+#bottomnav-container.loaded {
+    opacity: 1;
+}
+
+/* ============================================
+   Mobile Specific Styles
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Fixed bottom nav on mobile */
+    #bottomnav-container {
+        height: var(--bottomnav-height);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: var(--z-bottomnav);
+    }
+    
+    /* Add padding to main content to account for bottom nav only */
+    body.has-bottom-nav main {
+        padding-bottom: 80px !important;
+    }
+    
+    /* Make stat cards 2 columns on mobile - IMPORTANT FOR SIDE BY SIDE */
+    .stats-grid,
+    .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4,
+    .grid.grid-cols-1.md\\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+    
+    /* Ensure stat cards are compact on mobile */
+    .stats-grid > div,
+    .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div,
+    .grid.grid-cols-1.md\\:grid-cols-4 > div {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+/* ============================================
+   Component Transitions
+   ============================================ */
+
+/* Smooth transitions after components are loaded */
+#sidebar-container.loaded {
+    transition: width 0.3s ease-in-out, border 0.3s ease-in-out;
+}
+
+/* Sidebar collapsed state */
+#sidebar.collapsed {
+    width: 0 !important;
+    overflow: hidden;
+}
+
+/* Toggle button icon rotation */
+#sidebarToggle.collapsed i {
+    transform: rotate(180deg);
+}
+
+/* ============================================
+   Loading States
+   ============================================ */
+
+/* Loading skeleton animation - removed to prevent flickering */
+
+/* ============================================
+   Bottom Navigation
+   ============================================ */
+
+/* Bottom nav active state */
+.bottom-nav-link.active {
+    color: var(--color-primary-600) !important;
+    font-weight: 600;
+}
+
+.bottom-nav-link.active span {
+    font-weight: 600;
+}
+
+.bottom-nav-link {
+    transition: color 0.2s ease;
+    color: #6b7280;
+}
+
+.bottom-nav-link:hover {
+    color: var(--color-primary-600);
+}
+
+/* ============================================
+   Mobile Menu Modal
+   ============================================ */
+
+/* Mobile menu slide up animation */
+#mobileMenuContent {
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+}
+
+#mobileMenuContent.show {
+    transform: translateY(0) !important;
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+/* Page header icon spacing */
+.ml-13 {
+    margin-left: 3.25rem; /* 52px - aligns with icon + gap */
+}
+
+/* Prevent text selection on buttons */
+button {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Smooth scrolling for main content */
+main {
+    scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ============================================
+   Responsive Grid Utilities
+   ============================================ */
+
+/* Ensure grids are responsive */
+@media (max-width: 640px) {
+    /* Force 2-column layout for stat cards on small screens */
+    .responsive-grid-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+    #sidebar-container,
+    #topbar-container,
+    #bottomnav-container {
+        display: none !important;
+    }
+    
+    body.has-bottom-nav main {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================
+   Login Page Specific Styles
+   ============================================ */
+
+/* Video Background */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.video-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+.video-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+/* Login Page Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Login Container Animation */
+.login-container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Login Card Animation */
+.login-card {
+    animation: slideUp 0.6s ease-out;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Logo Animation */
+.logo-container,
+.logo-animate {
+    animation: fadeInDown 0.6s ease-out 0.4s both;
+}
+
+/* Form Animation */
+.form-animate {
+    animation: fadeIn 0.8s ease-out 0.4s both;
+}
+
+/* Form Group Staggered Animation */
+.form-group {
+    animation: fadeIn 0.5s ease-out both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.5s; }
+.form-group:nth-child(2) { animation-delay: 0.6s; }
+.form-group:nth-child(3) { animation-delay: 0.7s; }
+.form-group:nth-child(4) { animation-delay: 0.8s; }
+
+/* Demo Credentials Animation */
+.demo-credentials {
+    animation: fadeIn 0.5s ease-out 0.9s both;
+}
+
+/* Footer Text Animation */
+.footer-text {
+    animation: fadeIn 0.5s ease-out 1s both;
+}
+
+/* Keep icons visible */
+.input-icon {
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Glass morphism effect */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Dark Mode Support (Future Enhancement)
+   ============================================ */
+
+/* @media (prefers-color-scheme: dark) {
+    :root {
+        --bg-main: #1a1a1a;
+        --bg-card: #2d2d2d;
+        --bg-container: #2d2d2d;
+    }
+} */
+
+/* ============================================
+   Toast Notifications
+   ============================================ */
+
+/* Toast container */
+#toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+/* Toast message */
+.toast {
+    min-width: 300px;
+    max-width: 400px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid;
+}
+
+.toast.hiding {
+    animation: slideOutRight 0.3s ease-out forwards;
+}
+
+/* Toast types */
+.toast.success {
+    border-left-color: #22c55e;
+}
+
+.toast.error {
+    border-left-color: #ef4444;
+}
+
+.toast.warning {
+    border-left-color: #f59e0b;
+}
+
+.toast.info {
+    border-left-color: #3b82f6;
+}
+
+/* Toast icon */
+.toast-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.toast.success .toast-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.toast.error .toast-icon {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.toast.warning .toast-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.toast.info .toast-icon {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* Toast content */
+.toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #111827;
+    margin-bottom: 2px;
+}
+
+.toast-message {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* Toast close button */
+.toast-close {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.toast-close:hover {
+    color: #4b5563;
+}
+
+/* Toast animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    #toast-container {
+        top: 70px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .toast {
+        min-width: auto;
+        max-width: none;
+    }
+}

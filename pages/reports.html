@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Console Plug Manager</title>
+    <link rel="icon" type="image/png" href="../img/logo/logo.png">
+    <link rel="apple-touch-icon" href="../img/logo/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Reports">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="file-text" class="text-indigo-600" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Reports</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Generate and download reports.</p>
+                </div>
+                
+                <!-- Filters -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="grid grid-cols-1 w-full md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                            <input type="date" id="startDate" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                            <input type="date" id="endDate" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <button onclick="generateReport()" class="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
+                                <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                                <span>Generate</span>
+                            </button>
+                            <button onclick="downloadPDF()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2">
+                                <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                                <span>PDF</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 w-full md:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-6">
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 md:p-6 w-full min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm text-gray-600">Total Revenue</p>
+                            <i data-lucide="dollar-sign" class="text-blue-600" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <p class="text-xl md:text-2xl font-bold text-gray-900" id="reportRevenue">K 0</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 md:p-6 w-full min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm text-gray-600">Total Expenses</p>
+                            <i data-lucide="receipt" class="text-red-600" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <p class="text-xl md:text-2xl font-bold text-gray-900" id="reportExpenses">K 0</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 md:p-6 w-full min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm text-gray-600">Net Profit</p>
+                            <i data-lucide="trending-up" class="text-green-600" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <p class="text-xl md:text-2xl font-bold text-green-600" id="reportProfit">K 0</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 md:p-6 w-full min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm text-gray-600">Transactions</p>
+                            <i data-lucide="repeat" class="text-purple-600" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <p class="text-xl md:text-2xl font-bold text-gray-900" id="reportTransactions">0</p>
+                    </div>
+                </div>
+
+                <!-- Report Table -->
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden w-full min-w-0">
+                    <div class="p-4 md:p-6 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <h2 class="text-base md:text-lg font-bold text-gray-900">Detailed Report</h2>
+                        <select id="reportItemsPerPage" onchange="changeReportItemsPerPage()" class="text-sm border border-gray-300 rounded-lg px-3 py-2 max-w-full">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto w-full -mx-4 px-4 md:mx-0 md:px-0">
+                        <table class="w-full" id="reportTable">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th onclick="sortReport('date')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Date
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th onclick="sortReport('openingBalance')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Opening Balance
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th onclick="sortReport('quantitySold')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Quantity Sold
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th onclick="sortReport('buyingPrice')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Buying Price
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th onclick="sortReport('salesAmount')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Sales Amount
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Expense Item</th>
+                                    <th onclick="sortReport('expenseAmount')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Expense Amount
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">New Stock</th>
+                                    <th onclick="sortReport('netProfit')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Net Profit
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                    <th onclick="sortReport('difference')" class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase cursor-pointer hover:bg-gray-100">
+                                        <div class="flex items-center">
+                                            Difference
+                                            <i data-lucide="arrow-up-down" class="text-gray-400" style="width: 12px; height: 12px;"></i>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody" class="divide-y divide-gray-200">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="border-t border-gray-200 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="text-sm text-gray-700">
+                            Showing <span id="reportShowingStart">0</span> to <span id="reportShowingEnd">0</span> of <span id="reportTotalItems">0</span> records
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="previousReportPage()" id="reportPrevBtn" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                                <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                            </button>
+                            <div id="reportPageNumbers" class="flex gap-1">
+                                <!-- Page numbers -->
+                            </div>
+                            <button onclick="nextReportPage()" id="reportNextBtn" class="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/components.js"></script>
+<script src="../js/data.js"></script>
+    <script src="../js/reports.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

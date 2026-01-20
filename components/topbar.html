@@ -1,0 +1,18 @@
+<!-- Top Header -->
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0">
+    <div class="flex items-center">
+        <!-- Hamburger only on desktop, hidden on mobile -->
+        <button onclick="toggleSidebar()" class="hidden md:block mr-3 text-gray-600 hover:text-gray-900" id="sidebarToggle">
+            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+        </button>
+    </div>
+    <div class="flex items-center space-x-3 md:space-x-4">
+        <button onclick="window.location.href='notifications.html'" class="relative text-gray-600 hover:text-gray-900">
+            <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+            <span id="notificationCount" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+        </button>
+        <button onclick="window.location.href='profile.html'" id="headerProfileBtn" class="w-8 h-8 md:w-9 md:h-9 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition overflow-hidden">
+            <i data-lucide="user" class="text-white" style="width: 16px; height: 16px;"></i>
+        </button>
+    </div>
+</header>

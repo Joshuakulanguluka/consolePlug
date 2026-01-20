@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales - Console Plug Manager</title>
+    <link rel="icon" type="image/png" href="../img/logo/logo.png">
+    <link rel="apple-touch-icon" href="../img/logo/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Sales">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="shopping-cart" class="text-green-600" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Sales</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Record sales and view history.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 w-full lg:grid-cols-3 gap-3 md:gap-6">
+                    <!-- Sales Form -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 sticky top-0 h-fit no-hover">
+                            <h2 class="text-base md:text-lg font-bold text-gray-900 mb-6">Record New Sale</h2>
+                            
+                            <form id="salesForm" onsubmit="handleSaleSubmit(event)">
+                                <div class="space-y-4">
+                                    <!-- Product Category -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Product Category <span class="text-red-500">*</span></label>
+                                        <select id="saleCategory" required onchange="handleSaleCategoryChange()" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Select Category</option>
+                                            <option value="Console">Console</option>
+                                            <option value="Accessories">Accessories</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Platform -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Platform <span class="text-red-500">*</span></label>
+                                        <select id="salePlatform" required onchange="handleSalePlatformChange()" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Select Platform</option>
+                                            <option value="Xbox">Xbox</option>
+                                            <option value="PlayStation">PlayStation</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Product Name / Model -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Product Name / Model <span class="text-red-500">*</span></label>
+                                        <select id="saleItem" required onchange="updateSaleDetails()" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Select Product</option>
+                                        </select>
+                                        <p class="text-xs text-gray-500 mt-1">Only available stock shown</p>
+                                    </div>
+                                    
+                                    <!-- Serial Number (for consoles only) -->
+                                    <div id="serialNumberField" class="hidden">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Serial Number <span class="text-red-500">*</span></label>
+                                        <input type="text" id="saleSerialNumber" readonly class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                                    </div>
+                                    
+                                    <!-- Quantity -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity <span class="text-red-500">*</span></label>
+                                        <input type="number" id="saleQuantity" required min="1" onchange="calculateSale()" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <p class="text-xs text-gray-500 mt-1">Available: <span id="availableQty" class="font-semibold text-blue-600">0</span></p>
+                                    </div>
+                                    
+                                    <!-- Selling Price -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Selling Price (K) <span class="text-red-500">*</span></label>
+                                        <input type="number" id="salePrice" required min="0" step="0.01" onchange="calculateSale()" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00">
+                                        <p class="text-xs text-gray-500 mt-1">Default: <span id="defaultPrice" class="font-semibold">K 0</span></p>
+                                    </div>
+                                    
+                                    <!-- Payment Method -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
+                                        <select id="paymentMethod" required class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Select Payment Method</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Mobile Money">Mobile Money</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Notes -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
+                                        <textarea id="saleNotes" rows="2" class="w-full max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Discount, customer notes..."></textarea>
+                                    </div>
+                                    
+                                    <!-- Calculation Summary -->
+                                    <div class="border-t border-gray-200 pt-4 space-y-2">
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-600">Total Amount:</span>
+                                            <span class="font-bold text-gray-900" id="displayTotalAmount">K 0</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-600">Net Profit:</span>
+                                            <span class="font-bold text-green-600" id="displayNetProfit">K 0</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2">
+                                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                        Complete Sale
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Today's Sales -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl border border-gray-200 p-3 md:p-6 w-full min-w-0 flex flex-col sticky top-0 no-hover">
+                            <h2 class="text-base md:text-lg font-bold text-gray-900 mb-6">Today's Sales</h2>
+                            
+                            <!-- Sales Stats -->
+                            <div class="grid grid-cols-1 w-full md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-sm text-blue-700">Total Sales</p>
+                                        <i data-lucide="dollar-sign" class="text-blue-600" style="width: 20px; height: 20px;"></i>
+                                    </div>
+                                    <p class="text-xl font-bold text-blue-900" id="totalSalesAmount">K 0</p>
+                                </div>
+                                <div class="bg-green-50 rounded-lg p-4 border border-green-100">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-sm text-green-700">Total Profit</p>
+                                        <i data-lucide="trending-up" class="text-green-600" style="width: 20px; height: 20px;"></i>
+                                    </div>
+                                    <p class="text-xl font-bold text-green-900" id="totalProfitAmount">K 0</p>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-4 border border-purple-100">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-sm text-purple-700">Transactions</p>
+                                        <i data-lucide="repeat" class="text-purple-600" style="width: 20px; height: 20px;"></i>
+                                    </div>
+                                    <p class="text-xl font-bold text-purple-900" id="totalTransactions">0</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Sales Table with Scroll -->
+                            <div class="flex-1 overflow-auto border border-gray-200 rounded-lg" style="height: 580px;">
+                                <table class="w-full">
+                                    <thead class="bg-gray-100 border-b border-gray-200 sticky top-0">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Time</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Product Name / Model</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Serial Number</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Qty Sold</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Selling Price</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Total Amount</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Net Profit</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Payment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="salesTableBody" class="divide-y divide-gray-200 bg-white">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/components.js"></script>
+<script src="../js/data.js"></script>
+    <script src="../js/sales.js"></script>
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
