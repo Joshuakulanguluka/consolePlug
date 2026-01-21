@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="../img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    
+    <title>Notifications - Console Plug Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Notifications">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="bell" class="text-yellow-600"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Notifications</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">View alerts and system messages.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <!-- Notification Filters -->
+                    <div class="content-card content-card--md mb-6">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex gap-3 flex-wrap">
+                                <button onclick="filterNotifications('all')" data-filter="all" class="filter-btn filter-btn--active">
+                                    All
+                                </button>
+                                <button onclick="filterNotifications('unread')" data-filter="unread" class="filter-btn filter-btn--inactive">
+                                    Unread
+                                </button>
+                                <button onclick="filterNotifications('warning')" data-filter="warning" class="filter-btn filter-btn--inactive">
+                                    Warnings
+                                </button>
+                                <button onclick="filterNotifications('success')" data-filter="success" class="filter-btn filter-btn--inactive">
+                                    Success
+                                </button>
+                            </div>
+                            <button onclick="markAllAsRead()" class="btn-primary">
+                                <i data-lucide="check-check"></i>
+                                <span>Mark All Read</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notifications List -->
+                    <div id="notificationsList">
+                        <!-- Populated by JS with pagination inside the card -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/calculations.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

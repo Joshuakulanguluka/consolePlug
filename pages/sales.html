@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="../img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    
+    <title>Sales - Console Plug Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Sales">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="shopping-cart" class="text-green-600"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Sales</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Record today's sales transactions.</p>
+                </div>
+
+                <!-- Today's Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Today's Sales</p>
+                            <p class="stat-value" id="totalSalesAmount">K 0</p>
+                            <p class="stat-description">Total revenue</p>
+                        </div>
+                        <div class="stat-icon bg-blue-50">
+                            <i data-lucide="dollar-sign" class="text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Today's Profit</p>
+                            <p class="stat-value" id="totalProfitAmount">K 0</p>
+                            <p class="stat-description">Net profit</p>
+                        </div>
+                        <div class="stat-icon bg-green-50">
+                            <i data-lucide="trending-up" class="text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Items Sold</p>
+                            <p class="stat-value" id="totalTransactions">0</p>
+                            <p class="stat-description">Today's count</p>
+                        </div>
+                        <div class="stat-icon bg-purple-50">
+                            <i data-lucide="repeat" class="text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Average Sale</p>
+                            <p class="stat-value" id="avgSale">K 0</p>
+                            <p class="stat-description">Per transaction</p>
+                        </div>
+                        <div class="stat-icon bg-orange-50">
+                            <i data-lucide="trending-up" class="text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 w-full gap-3 md:gap-6">
+                    <!-- Sales Form -->
+                    <div>
+                        <div class="content-card content-card--md no-hover">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="plus-circle" class="text-green-600"></i>
+                                </div>
+                                <h2 class="section-header mb-0">Record new sale</h2>
+                            </div>
+                            
+                            <form id="salesForm" onsubmit="handleSaleSubmit(event)">
+                                <div class="space-y-4">
+                                    <!-- Quick Add Item Section -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Add item to cart</h3>
+                                        
+                                        <div class="grid grid-cols-1 gap-3">
+                                            <!-- Product Selection with Filters -->
+                                            <div class="grid grid-cols-3 gap-2">
+                                                <select id="quickCategoryFilter" class="select" onchange="quickFilterProducts()">
+                                                    <option value="">All</option>
+                                                    <option value="Console">Console</option>
+                                                    <option value="Accessories">Accessories</option>
+                                                </select>
+                                                
+                                                <select id="quickPlatformFilter" class="select" onchange="quickFilterProducts()">
+                                                    <option value="">All</option>
+                                                    <option value="Xbox">Xbox</option>
+                                                    <option value="PlayStation">PS</option>
+                                                    <option value="Nintendo">Nintendo</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                                
+                                                <select id="quickProductSelect" class="select" onchange="quickAddProduct()">
+                                                    <option value="">Select product...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Cart Items -->
+                                    <div id="cartContainer" class="border border-gray-200 rounded-lg overflow-hidden">
+                                        <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                            <div class="grid grid-cols-12 gap-2 text-xs font-medium text-gray-600 uppercase">
+                                                <div class="col-span-4">Item</div>
+                                                <div class="col-span-2 text-center">Qty</div>
+                                                <div class="col-span-2 text-right">Price</div>
+                                                <div class="col-span-3 text-right">Total</div>
+                                                <div class="col-span-1"></div>
+                                            </div>
+                                        </div>
+                                        <div id="cartItemsList" class="bg-white">
+                                            <div class="px-4 py-8 text-center text-gray-500 text-sm">
+                                                Cart is empty. Add items above.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Totals Summary -->
+                                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Items:</span>
+                                                <span class="font-medium text-gray-900" id="cartTotalItems">0</span>
+                                            </div>
+                                            <div class="flex justify-between text-lg">
+                                                <span class="font-semibold text-gray-900">Total:</span>
+                                                <span class="font-bold text-gray-900" id="cartTotalAmount">K 0.00</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Profit:</span>
+                                                <span class="font-medium" id="cartTotalProfit">K 0.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Payment Method -->
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="label">Payment <span class="text-red-500">*</span></label>
+                                            <input type="text" id="paymentMethod" required class="input" list="paymentList" placeholder="Type or select...">
+                                            <datalist id="paymentList">
+                                                <option value="Cash">
+                                                <option value="Mobile money">
+                                                <option value="Other">
+                                            </datalist>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="label">Notes (optional)</label>
+                                            <input type="text" id="saleNotes" class="input" placeholder="Customer notes...">
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn-primary btn-primary--lg btn-primary--full" id="completeSaleBtn" disabled>
+                                        <i data-lucide="check"></i>
+                                        Complete sale
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/calculations.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

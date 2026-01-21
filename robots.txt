@@ -1,0 +1,30 @@
+# Console Plug Manager - Robots.txt
+# Only the landing page (index.html) is allowed for indexing
+# All internal application pages are disallowed
+
+User-agent: *
+
+# Allow landing page
+Allow: /
+Allow: /index.html
+
+# Block all internal pages
+Disallow: /pages/
+Disallow: /pages/dashboard.html
+Disallow: /pages/stock.html
+Disallow: /pages/sales.html
+Disallow: /pages/sales-history.html
+Disallow: /pages/expenses.html
+Disallow: /pages/cash.html
+Disallow: /pages/reports.html
+Disallow: /pages/profile.html
+Disallow: /pages/notifications.html
+Disallow: /pages/settings.html
+
+# Block assets and resources
+Disallow: /js/
+Disallow: /css/
+Disallow: /img/
+
+# Sitemap location
+Sitemap: https://your-domain.vercel.app/sitemap.xml

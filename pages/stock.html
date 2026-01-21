@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="../img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    
+    <title>Manage Stock - Console Plug Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Manage Stock">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="package" class="text-purple-600"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Manage stock</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Add, edit, and track your inventory.</p>
+                </div>
+                
+                <!-- Stats Summary -->
+                <div class="stats-grid">
+                    <div onclick="clearAllFilters()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Total Stock Items</p>
+                            <p class="stat-value" id="totalItems">0</p>
+                            <p class="stat-description">Click to view all</p>
+                        </div>
+                        <div class="stat-icon bg-blue-50">
+                            <i data-lucide="package" class="text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div onclick="filterLowStock()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Low Stock Items</p>
+                            <p class="stat-value" id="lowStock">0</p>
+                            <p class="stat-description">Click to filter</p>
+                        </div>
+                        <div class="stat-icon bg-orange-50">
+                            <i data-lucide="alert-triangle" class="text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div onclick="clearAllFilters()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Total Stock Value</p>
+                            <p class="stat-value" id="totalValue">K 0</p>
+                            <p class="stat-description">Click to view all</p>
+                        </div>
+                        <div class="stat-icon bg-green-50">
+                            <i data-lucide="dollar-sign" class="text-green-600"></i>
+                        </div>
+                    </div>
+                    <div onclick="filterAddedToday()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Stock Added Today</p>
+                            <p class="stat-value" id="addedToday">0</p>
+                            <p class="stat-description">Click to filter</p>
+                        </div>
+                        <div class="stat-icon bg-purple-50">
+                            <i data-lucide="calendar-plus" class="text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Bar -->
+                <div class="content-card content-card--md mb-4 md:mb-6">
+                    <div class="filter-bar">
+                        <div class="flex-1">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" class="text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="searchInput"
+                                    class="input pl-10"
+                                    placeholder="Search stock by name or category..."
+                                    onkeyup="filterStock()"
+                                >
+                            </div>
+                        </div>
+                        <div class="filter-bar__actions">
+                            <select id="categoryFilter" onchange="handleCategoryFilterChange()" class="filter-select">
+                                <option value="">All Categories</option>
+                                <option value="Console">Console</option>
+                                <option value="Accessory">Accessory</option>
+                            </select>
+                            <select id="subcategoryFilter" onchange="filterStock()" class="filter-select">
+                                <option value="">All Types</option>
+                            </select>
+                            <select id="platformFilter" onchange="filterStock()" class="filter-select">
+                                <option value="">All Platforms</option>
+                                <option value="Xbox">Xbox</option>
+                                <option value="PlayStation">PlayStation</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <select id="conditionFilter" onchange="filterStock()" class="filter-select">
+                                <option value="">All Conditions</option>
+                                <option value="New">New</option>
+                                <option value="Pre-Owned">Pre-Owned</option>
+                            </select>
+                            <button onclick="openAddStockModal()" class="btn-primary btn-primary--icon">
+                                <i data-lucide="plus"></i>
+                                Add Stock
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Table -->
+                <div class="content-card content-card--responsive overflow-hidden">
+                    <div class="table-container table-container--bordered">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product name / Model</th>
+                                    <th>Category</th>
+                                    <th>Platform</th>
+                                    <th>Condition</th>
+                                    <th>Qty available</th>
+                                    <th>Buying price per unit</th>
+                                    <th>Selling price per unit</th>
+                                    <th>Net profit per unit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="border-t border-gray-200 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="text-sm text-gray-700">
+                            Showing <span id="showingStart">0</span> to <span id="showingEnd">0</span> of <span id="totalStockItems">0</span> items
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="previousPage()" id="prevBtn" class="pagination-btn">
+                                <i data-lucide="chevron-left"></i>
+                            </button>
+                            <div id="pageNumbers" class="flex gap-1">
+                                <!-- Page numbers populated by JS -->
+                            </div>
+                            <button onclick="nextPage()" id="nextBtn" class="pagination-btn">
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+
+    <!-- Add Stock Modal -->
+    <div id="stockModal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'stockModal')">
+        <div class="modal modal--xl modal--responsive" onclick="event.stopPropagation()">
+            <div class="modal__header">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="package-plus" class="text-purple-600"></i>
+                        </div>
+                        <h2 class="modal-title" id="modalTitle">Add New Stock</h2>
+                    </div>
+                    <button type="button" onclick="closeModal('stockModal')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="stockForm" onsubmit="handleStockSubmit(event)" class="modal__body">
+                <input type="hidden" id="stockId">
+                
+                <div class="space-y-4">
+                    <!-- Product Name / Model -->
+                    <div>
+                        <label class="label">Product name / Model <span class="text-red-500">*</span></label>
+                        <input type="text" id="productName" required class="input" placeholder="e.g., PlayStation 5 Digital Edition">
+                    </div>
+                    
+                    <!-- Category & Platform - Side by Side -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="label">Category <span class="text-red-500">*</span></label>
+                            <input type="text" id="itemCategory" required class="input" list="categoryList" placeholder="Type or select">
+                            <datalist id="categoryList">
+                                <option value="Console">
+                                <option value="Accessories">
+                            </datalist>
+                        </div>
+                        
+                        <div>
+                            <label class="label">Platform <span class="text-red-500">*</span></label>
+                            <input type="text" id="itemPlatform" required class="input" list="platformList" placeholder="Type or select">
+                            <datalist id="platformList">
+                                <option value="Xbox">
+                                <option value="PlayStation">
+                                <option value="Nintendo">
+                                <option value="Other">
+                            </datalist>
+                        </div>
+                    </div>
+                    
+                    <!-- Condition & Quantity - Side by Side -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="label">Condition <span class="text-red-500">*</span></label>
+                            <input type="text" id="condition" required class="input" list="conditionList" placeholder="Type or select">
+                            <datalist id="conditionList">
+                                <option value="New">
+                                <option value="Pre-Owned">
+                            </datalist>
+                        </div>
+                        
+                        <div>
+                            <label class="label">Quantity Available <span class="text-red-500">*</span></label>
+                            <input type="number" id="itemQuantity" required min="1" value="1" class="input">
+                        </div>
+                    </div>
+                    
+                    <!-- Buying Price & Selling Price - Side by Side -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="label">Buying price per unit (K) <span class="text-red-500">*</span></label>
+                            <input type="number" id="buyingPrice" required min="0" step="0.01" class="input" placeholder="0.00" onchange="calculateNetProfit()">
+                            <p class="text-xs text-gray-500 mt-1">Cost per item</p>
+                        </div>
+                        
+                        <div>
+                            <label class="label">Selling price per unit (K) <span class="text-red-500">*</span></label>
+                            <input type="number" id="sellingPrice" required min="0" step="0.01" class="input" placeholder="0.00" onchange="calculateNetProfit()">
+                            <p class="text-xs text-gray-500 mt-1">Price per item</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Net Profit Display -->
+                    <div id="netProfitCard" class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-700">Net profit per unit:</span>
+                            <span class="text-lg font-bold text-green-600" id="netProfitDisplay">K 0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div>
+                        <label class="label">Notes <span class="text-gray-500">(optional)</span></label>
+                        <textarea id="notes" rows="2" class="textarea" placeholder="Additional information..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeModal('stockModal')" class="btn-secondary btn-secondary--lg btn-secondary--full">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary btn-primary--lg btn-primary--full">
+                        <i data-lucide="plus"></i>
+                        Add stock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Adjust Quantity Modal -->
+    <div id="adjustModal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'adjustModal')">
+        <div class="modal modal--responsive" onclick="event.stopPropagation()">
+            <div class="modal__header">
+                <div class="flex items-center justify-between">
+                    <h2 class="modal-title">Adjust Quantity</h2>
+                    <button type="button" onclick="closeModal('adjustModal')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <form id="adjustForm" onsubmit="handleAdjustSubmit(event)" class="modal__body">
+                <input type="hidden" id="adjustStockId">
+                
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">Product</p>
+                    <p class="font-medium text-gray-900" id="adjustProductName"></p>
+                    <p class="text-sm text-gray-600 mt-2">Current Quantity: <span class="font-bold text-gray-900" id="adjustCurrentQty">0</span></p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="label">Adjustment Type <span class="text-red-500">*</span></label>
+                        <select id="adjustType" class="select" required>
+                            <option value="add">Add Stock (+)</option>
+                            <option value="remove">Remove Stock (-)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="label">Quantity <span class="text-red-500">*</span></label>
+                        <input type="number" id="adjustQuantity" class="input" placeholder="0" min="1" required>
+                    </div>
+                    
+                    <div>
+                        <label class="label">Reason <span class="text-gray-500">(Optional)</span></label>
+                        <textarea id="adjustReason" class="textarea" rows="2" placeholder="e.g., Damaged, Returned, Restocked"></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeModal('adjustModal')" class="btn-secondary btn-secondary--lg btn-secondary--full">Cancel</button>
+                    <button type="submit" class="btn-primary btn-primary--lg btn-primary--full">Adjust</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/calculations.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

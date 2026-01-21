@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="../img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    
+    <title>Reports - Console Plug Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script><script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    </head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Reports">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="file-text" class="text-indigo-600"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Reports</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Generate and download reports.</p>
+                </div>
+                
+                <!-- Filters -->
+                <div class="content-card content-card--responsive mb-6">
+                    <div class="filter-bar">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                            <div>
+                                <label class="label">Start Date</label>
+                                <input type="date" id="startDate" class="input">
+                            </div>
+                            <div>
+                                <label class="label">End Date</label>
+                                <input type="date" id="endDate" class="input">
+                            </div>
+                        </div>
+                        <div class="filter-bar__actions">
+                            <button onclick="generateReport()" class="btn-primary">
+                                <i data-lucide="refresh-cw"></i>
+                                <span>Generate</span>
+                            </button>
+                            <button onclick="downloadPDF()" class="btn-success">
+                                <i data-lucide="download"></i>
+                                <span>PDF</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Total Revenue</p>
+                            <p class="stat-value" id="reportRevenue">K 0</p>
+                            <p class="stat-description">Period total</p>
+                        </div>
+                        <div class="stat-icon bg-blue-50">
+                            <i data-lucide="dollar-sign" class="text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Total Expenses</p>
+                            <p class="stat-value" id="reportExpenses">K 0</p>
+                            <p class="stat-description">Period total</p>
+                        </div>
+                        <div class="stat-icon bg-red-50">
+                            <i data-lucide="receipt" class="text-red-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Net Profit</p>
+                            <p class="stat-value" id="reportProfit">K 0</p>
+                            <p class="stat-description">Revenue - Expenses</p>
+                        </div>
+                        <div class="stat-icon bg-green-50">
+                            <i data-lucide="trending-up" class="text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Transactions</p>
+                            <p class="stat-value" id="reportTransactions">0</p>
+                            <p class="stat-description">Total count</p>
+                        </div>
+                        <div class="stat-icon bg-purple-50">
+                            <i data-lucide="repeat" class="text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Table -->
+                <div class="content-card content-card--responsive overflow-hidden">
+                    <div class="filter-bar mb-6">
+                        <h2 class="filter-bar__title">Detailed Report</h2>
+                    </div>
+                    <div class="table-container table-container--bordered mb-6">
+                        <table class="table" id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Opening Balance</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Buying Price</th>
+                                    <th>Sales Amount</th>
+                                    <th>Expense Item</th>
+                                    <th>Expense Amount</th>
+                                    <th>New Stock</th>
+                                    <th>Net Profit</th>
+                                    <th>Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-sm text-gray-600">
+                            Showing <span id="reportShowingStart">0</span> to <span id="reportShowingEnd">0</span> of <span id="reportTotalItems">0</span> records
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="previousReportPage()" id="reportPrevBtn" class="pagination-btn">
+                                <i data-lucide="chevron-left"></i>
+                            </button>
+                            <div id="reportPageNumbers" class="flex gap-2">
+                                <!-- Page numbers -->
+                            </div>
+                            <button onclick="nextReportPage()" id="reportNextBtn" class="pagination-btn">
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/calculations.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

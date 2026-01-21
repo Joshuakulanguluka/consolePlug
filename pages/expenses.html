@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="../img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    
+    <title>Expenses - Console Plug Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind-config.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-gray-100 overflow-x-hidden" data-page-title="Expenses">
+    <div class="flex h-screen overflow-hidden relative w-full max-w-full">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden w-full min-w-0">
+            <!-- Topbar Container -->
+            <div id="topbar-container"></div>
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                            <i data-lucide="credit-card" class="text-red-600"></i>
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Expenses</h1>
+                    </div>
+                    <p class="text-gray-600 ml-13">Record and track business expenses.</p>
+                </div>
+                
+                <!-- Stats Summary -->
+                <div class="stats-grid">
+                    <div onclick="filterThisMonth()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Total Expenses (This Month)</p>
+                            <p class="stat-value" id="totalMonthExpenses">K 0</p>
+                            <p class="stat-description">Click to filter</p>
+                        </div>
+                        <div class="stat-icon bg-red-50">
+                            <i data-lucide="calendar" class="text-red-600"></i>
+                        </div>
+                    </div>
+                    <div onclick="filterToday()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Expenses Today</p>
+                            <p class="stat-value" id="todayExpenses">K 0</p>
+                            <p class="stat-description">Click to filter</p>
+                        </div>
+                        <div class="stat-icon bg-orange-50">
+                            <i data-lucide="clock" class="text-orange-600"></i>
+                        </div>
+                    </div>
+                    <div onclick="filterHighestCategory()" class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Highest Expense Category</p>
+                            <p class="stat-value" id="highestCategory">-</p>
+                            <p class="stat-description">Click to filter</p>
+                        </div>
+                        <div class="stat-icon bg-purple-50">
+                            <i data-lucide="trending-up" class="text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-horizontal">
+                        <div class="stat-card-content">
+                            <p class="stat-label">Average Daily Expense</p>
+                            <p class="stat-value" id="avgDailyExpense">K 0</p>
+                            <p class="stat-description">This month</p>
+                        </div>
+                        <div class="stat-icon bg-green-50">
+                            <i data-lucide="bar-chart-2" class="text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <!-- Expenses List -->
+                    <div class="content-card content-card--responsive">
+                        <div class="filter-bar mb-6">
+                            <h2 class="filter-bar__title">Expense History</h2>
+                            <div class="filter-bar__actions">
+                                <select id="dateFilter" onchange="filterExpenses()" class="filter-select">
+                                    <option value="all">All Time</option>
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                </select>
+                                <select id="categoryFilter" onchange="filterExpenses()" class="filter-select">
+                                    <option value="">All Categories</option>
+                                    <option value="Transport">Transport</option>
+                                    <option value="Utilities">Utilities</option>
+                                    <option value="Repairs">Repairs</option>
+                                    <option value="Rent">Rent</option>
+                                    <option value="Salaries">Salaries</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Supplies">Supplies</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <button onclick="openAddExpenseModal()" class="btn-primary btn-primary--icon">
+                                    <i data-lucide="plus"></i>
+                                    Add Expense
+                                </button>
+                            </div>
+                        </div>
+                            
+                            <!-- Expenses List (Discreet Design) -->
+                            <div class="border border-gray-200 rounded-lg overflow-hidden mb-4">
+                                <div id="expensesListContainer">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div class="border-t border-gray-200 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div class="text-sm text-gray-600">
+                                    Showing <span id="expensesShowingStart">0</span> to <span id="expensesShowingEnd">0</span> of <span id="totalExpensesItems">0</span> expenses
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button id="expensesPrevBtn" onclick="previousExpensesPage()" class="pagination-btn">
+                                        <i data-lucide="chevron-left"></i>
+                                    </button>
+                                    <div id="expensesPageNumbers" class="flex gap-1">
+                                        <!-- Page numbers populated by JS -->
+                                    </div>
+                                    <button id="expensesNextBtn" onclick="nextExpensesPage()" class="pagination-btn">
+                                        <i data-lucide="chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="expenseModal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event, 'expenseModal')">
+        <div class="modal modal--responsive" onclick="event.stopPropagation()">
+            <div class="modal__header">
+                <div class="flex items-center justify-between">
+                    <h2 class="modal-title">Add Expense</h2>
+                    <button type="button" onclick="closeModal('expenseModal')" class="text-gray-400 hover:text-gray-600 transition">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="expenseForm" onsubmit="handleExpenseSubmit(event)" class="modal__body">
+                <div class="space-y-4">
+                    <!-- Category -->
+                    <div>
+                        <label class="label">Category <span class="text-red-500">*</span></label>
+                        <select id="expenseCategory" required class="select">
+                            <option value="">Select Category</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Repairs">Repairs</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Salaries">Salaries</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Supplies">Supplies</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div>
+                        <label class="label">Description <span class="text-red-500">*</span></label>
+                        <input type="text" id="expenseItem" required class="input" placeholder="e.g., Fuel for delivery">
+                    </div>
+                    
+                    <!-- Amount -->
+                    <div>
+                        <label class="label">Amount (K) <span class="text-red-500">*</span></label>
+                        <input type="number" id="expenseAmount" required min="0" step="0.01" class="input" placeholder="0.00">
+                    </div>
+                    
+                    <!-- Date -->
+                    <div>
+                        <label class="label">Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="expenseDate" required class="input">
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div>
+                        <label class="label">Notes <span class="text-gray-500">(Optional)</span></label>
+                        <textarea id="expenseNotes" rows="3" class="textarea" placeholder="Additional details..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeModal('expenseModal')" class="btn-secondary btn-secondary--lg btn-secondary--full">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary btn-primary--lg btn-primary--full">
+                        <i data-lucide="plus"></i>
+                        Add Expense
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav Container -->
+    <div id="bottomnav-container"></div>
+
+    <script src="../js/toast.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/calculations.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
